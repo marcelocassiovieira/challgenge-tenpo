@@ -18,7 +18,6 @@ public class PercentageIncreaseServiceTest {
 
     @Test
     public void testGetValueWithPercentageIncreasedWhenValueAndPercentageProvidedThenReturnIncreasedValue() {
-        // Arrange
         ValueRequestDto valueRequestDto = new ValueRequestDto();
         valueRequestDto.setOperandOne(100D);
         valueRequestDto.setOperandTwo(10D);
@@ -29,16 +28,13 @@ public class PercentageIncreaseServiceTest {
         expectedResponse.setTotal(110);
         when(iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto)).thenReturn(expectedResponse);
 
-        // Act
         ProcessedValueResponseDto actualResponse = iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto);
 
-        // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     @Test
     public void testGetValueWithPercentageIncreasedWhenValueIsZeroThenReturnZero() {
-        // Arrange
         ValueRequestDto valueRequestDto = new ValueRequestDto();
         valueRequestDto.setOperandOne(0D);
         valueRequestDto.setOperandTwo(10D);
@@ -49,16 +45,13 @@ public class PercentageIncreaseServiceTest {
         expectedResponse.setTotal(0);
         when(iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto)).thenReturn(expectedResponse);
 
-        // Act
         ProcessedValueResponseDto actualResponse = iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto);
 
-        // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     @Test
     public void testGetValueWithPercentageIncreasedWhenPercentageIsZeroThenReturnValue() {
-        // Arrange
         ValueRequestDto valueRequestDto = new ValueRequestDto();
         valueRequestDto.setOperandOne(100D);
         valueRequestDto.setOperandTwo(0D);
@@ -69,10 +62,8 @@ public class PercentageIncreaseServiceTest {
         expectedResponse.setTotal(100);
         when(iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto)).thenReturn(expectedResponse);
 
-        // Act
         ProcessedValueResponseDto actualResponse = iPercentageIncreaseService.getValueWithPercentageIncreased(valueRequestDto);
 
-        // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 }

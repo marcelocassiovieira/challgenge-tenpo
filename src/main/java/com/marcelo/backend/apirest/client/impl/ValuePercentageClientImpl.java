@@ -10,6 +10,7 @@ import com.marcelo.backend.apirest.service.IClientePercentageService;
 import com.marcelo.backend.apirest.service.impl.ClientePercentageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class ValuePercentageClientImpl implements IValuePercentageClient {
             PercentageResponse percentageResponse = mapper(percentageFromClient);
             return percentageResponse;
         } catch (HttpClientErrorException | HttpServerErrorException | WebClientResponseException e) {
-            throw new ValuePercentageClientException("500", "Error al obtener el porcentage externo");
+            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener el porcentage externo");
         }
     }
 
@@ -79,7 +80,7 @@ public class ValuePercentageClientImpl implements IValuePercentageClient {
             percentageResponse.setPercentage(lastlientPercentage.getPercentage());
             return percentageResponse;
         } catch (Exception e) {
-            throw new ValuePercentageClientException("500", "Error al obtener el porcentage");
+            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener el porcentage");
         }
     }
 

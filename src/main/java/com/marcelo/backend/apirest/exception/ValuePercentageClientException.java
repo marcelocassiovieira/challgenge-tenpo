@@ -1,10 +1,12 @@
 package com.marcelo.backend.apirest.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class ValuePercentageClientException extends RuntimeException{
 
-    String code;
+    HttpStatus code;
 
-    public ValuePercentageClientException(String code, String message) {
+    public ValuePercentageClientException(HttpStatus code, String message) {
         super(message);
         this.code = code;
     }

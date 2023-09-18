@@ -27,11 +27,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ValuePercentageClientException.class)
     public ResponseEntity<ErrorDto> handleValuePercentageClientException(ValuePercentageClientException ex) {
         ErrorDto errorDto = ErrorDto.builder()
-                .code(ex.code)
                 .message(ex.getMessage())
                 .build();
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+    @ExceptionHandler(RequestLimitException.class)
+    public ResponseEntity<ErrorDto> handleRequestLimitException(RequestLimitException ex) {
+        ErrorDto errorDto = ErrorDto.builder()
+                .code(ex.getCode())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 
 }

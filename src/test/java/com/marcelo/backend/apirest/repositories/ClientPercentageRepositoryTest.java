@@ -31,23 +31,13 @@ public class ClientPercentageRepositoryTest {
 
     @Test
     public void testGetNewerPercentageWhenInvokedThenCalledOnce() {
-        // Arrange is done in setUp()
-
-        // Act
         clientPercentageRepository.getNewerPercentage();
-
-        // Assert
         verify(clientPercentageRepository, times(1)).getNewerPercentage();
     }
 
     @Test
     public void testGetNewerPercentageWhenInvokedThenReturnsOptionalOfClientPercentage() {
-        // Arrange is done in setUp()
-
-        // Act
         Optional<ClientPercentage> result = clientPercentageRepository.getNewerPercentage();
-
-        // Assert
         assertTrue(result.isPresent());
         assertEquals(clientPercentage, result.get());
     }

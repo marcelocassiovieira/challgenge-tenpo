@@ -1,5 +1,6 @@
 package com.marcelo.backend.apirest.controller.impl;
 
+import com.marcelo.backend.apirest.aspects.IRequestLimit;
 import com.marcelo.backend.apirest.controller.IPercentageIncreaseController;
 import com.marcelo.backend.apirest.dto.ProcessedValueResponseDto;
 import com.marcelo.backend.apirest.dto.ValueRequestDto;
@@ -27,6 +28,7 @@ public class PercentageIncreaseController implements IPercentageIncreaseControll
 
     @Override
     @PostMapping
+    @IRequestLimit
     public ResponseEntity<Object> calculatePercentage(@Valid @RequestBody ValueRequestDto valueRequest, BindingResult result) {
         Map<String, Object> response = new HashMap<>();
         if(result.hasErrors()){
