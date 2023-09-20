@@ -3,12 +3,15 @@ package com.marcelo.backend.apirest.aspects;
 import com.marcelo.backend.apirest.dto.ProcessedValueResponseDto;
 import com.marcelo.backend.apirest.entity.History;
 import com.marcelo.backend.apirest.entity.ResponseApi;
+import com.marcelo.backend.apirest.exception.RequestLimitException;
 import com.marcelo.backend.apirest.service.IHistoryService;
+import com.marcelo.backend.apirest.utils.ExceptionsConstantes;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +27,12 @@ public class PercentageIncreaseAspect {
     private void anyControllerMethod() {
     }
 
+    /**
+     * Guarda las llamadas y las respuestas asincronicamente
+     * @param joinPoint
+     * @param request
+     * @param response
+     */
     @AfterReturning(pointcut = "anyControllerMethod() && args(request, ..)", returning = "response")
     public void logEndpointCall(JoinPoint joinPoint, Object request, ResponseEntity<Object> response) {
 
@@ -35,12 +44,10 @@ public class PercentageIncreaseAspect {
                     if (response.getStatusCode().is2xxSuccessful()) {
                         History history = getHistory(endpoint, processedValueResponseDto);
                         historyService.save(history);
-                        System.out.println("History guardado...");
                     }
                 }
             } catch (Exception e) {
-                //Crear una exception personalizada
-                e.printStackTrace();
+                throw new RequestLimitException(HttpStatus.TOO_MANY_REQUESTS, ExceptionsConstantes.ERROR_HISTORY);
             }
         });
     }

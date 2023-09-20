@@ -8,6 +8,8 @@ import com.marcelo.backend.apirest.exception.ValuePercentageClientException;
 import com.marcelo.backend.apirest.client.models.PercentageResponse;
 import com.marcelo.backend.apirest.service.IClientePercentageService;
 import com.marcelo.backend.apirest.service.impl.ClientePercentageServiceImpl;
+import com.marcelo.backend.apirest.utils.ApiConstantes;
+import com.marcelo.backend.apirest.utils.ExceptionsConstantes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -24,23 +25,24 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class ValuePercentageClientImpl implements IValuePercentageClient {
-    private final String URL_BASE = "http://demo4978813.mockable.io/";
     private ObjectMapper objectMapper;
     private WebClient webClient;
-
-    IClientePercentageService clientePercentageService;
-
+    private IClientePercentageService clientePercentageService;
     private static final int MAX_RETRIES = 3;
 
     @Autowired
-    public ValuePercentageClientImpl(RestTemplate restTemplate, ObjectMapper objectMapper,
+    public ValuePercentageClientImpl(ObjectMapper objectMapper,
                                      WebClient.Builder webClientBuilder,
                                      ClientePercentageServiceImpl clientePercentageService) {
         this.objectMapper = objectMapper;
-        this.webClient = webClientBuilder.baseUrl(URL_BASE).build();
+        this.webClient = webClientBuilder.baseUrl(ApiConstantes.CLIENT_MOCK).build();
         this.clientePercentageService = clientePercentageService;
     }
 
+    /**
+     * Obtiene el porcentage del cliente externo, si falla, busca en la base el ultimo valor guardado
+     * @return
+     */
     @Cacheable(value = "percentage_cache", key = "'percentage'")
     @Override
     @Retryable(value = { ValuePercentageClientException.class }, maxAttempts = MAX_RETRIES)
@@ -51,13 +53,13 @@ public class ValuePercentageClientImpl implements IValuePercentageClient {
             PercentageResponse percentageResponse = mapper(percentageFromClient);
             return percentageResponse;
         } catch (HttpClientErrorException | HttpServerErrorException | WebClientResponseException e) {
-            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener el porcentage externo");
+            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, ExceptionsConstantes.ERROR_OBTENER_PORCENTAGE);
         }
     }
 
     private Mono<String> getPercentageFromClient() {
         return webClient.get()
-                .uri("SumWithPercentageIncrease")
+                .uri(ApiConstantes.CLIENT_URI)
                 .retrieve()
                 .bodyToMono(String.class);
     }
@@ -70,17 +72,15 @@ public class ValuePercentageClientImpl implements IValuePercentageClient {
         }
     }
 
-
-
     @Recover
     private PercentageResponse getPercentageResponseFromBase() {
         try {
-            ClientPercentage lastlientPercentage = this.clientePercentageService.getLastlientPercentage().get();
+            ClientPercentage lastClientPercentage = this.clientePercentageService.getLastlientPercentage().get();
             PercentageResponse percentageResponse = new PercentageResponse();
-            percentageResponse.setPercentage(lastlientPercentage.getPercentage());
+            percentageResponse.setPercentage(lastClientPercentage.getPercentage());
             return percentageResponse;
         } catch (Exception e) {
-            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener el porcentage");
+            throw new ValuePercentageClientException(HttpStatus.INTERNAL_SERVER_ERROR, ExceptionsConstantes.ERROR_OBTENER_PORCENTAGE_BASE);
         }
     }
 

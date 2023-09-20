@@ -10,14 +10,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ResponseBody
-//    public String handleValidationException(MethodArgumentNotValidException ex) {
-//        return ex.getBindingResult().getFieldError().getDefaultMessage();
-//    }
-//
     @ExceptionHandler(ArithmeticException.class)
     @ResponseBody
     public ResponseEntity<String> handleArithmeticException(ArithmeticException ex) {
@@ -35,6 +27,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RequestLimitException.class)
     public ResponseEntity<ErrorDto> handleRequestLimitException(RequestLimitException ex) {
+        ErrorDto errorDto = ErrorDto.builder()
+                .code(ex.getCode())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EndpointCallException.class)
+    public ResponseEntity<ErrorDto> handleHistoryException(EndpointCallException ex) {
         ErrorDto errorDto = ErrorDto.builder()
                 .code(ex.getCode())
                 .message(ex.getMessage())

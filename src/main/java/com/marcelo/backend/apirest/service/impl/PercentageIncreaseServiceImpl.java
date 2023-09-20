@@ -13,11 +13,8 @@ import java.util.Objects;
 
 @Service
 public class PercentageIncreaseServiceImpl implements IPercentageIncreaseService {
-
     private IValuePercentageClient percentageClient;
-
     private IClientePercentageService clientePercentageService;
-
     @Autowired
     public PercentageIncreaseServiceImpl(IValuePercentageClient percentageClient,
                                          ClientePercentageServiceImpl clientePercentageService) {

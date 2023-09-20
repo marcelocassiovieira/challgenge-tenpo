@@ -5,6 +5,7 @@ import com.marcelo.backend.apirest.entity.History;
 import com.marcelo.backend.apirest.exception.HistoryException;
 import com.marcelo.backend.apirest.repositories.HistoryRepository;
 import com.marcelo.backend.apirest.service.IHistoryService;
+import com.marcelo.backend.apirest.utils.ExceptionsConstantes;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +42,7 @@ public class HistoryServiceImpl implements IHistoryService {
             return historyDtos;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new HistoryException("Error al obtener historias paginadas.", e);
+            throw new HistoryException(ExceptionsConstantes.ERROR_AL_OBTENER_HISTORIAS_PAGINADAS, e);
         }
     }
 
@@ -52,7 +53,7 @@ public class HistoryServiceImpl implements IHistoryService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new HistoryException("Error al convertir lista de historias a lista de DTOs.", e);
+            throw new HistoryException(ExceptionsConstantes.ERROR_AL_CONVERTIR_LISTA_DE_HISTORIAS_A_LISTA_DE_DTOS, e);
         }
     }
 }

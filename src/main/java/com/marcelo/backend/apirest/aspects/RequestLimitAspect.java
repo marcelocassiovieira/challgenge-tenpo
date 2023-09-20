@@ -1,6 +1,7 @@
 package com.marcelo.backend.apirest.aspects;
 
 import com.marcelo.backend.apirest.exception.RequestLimitException;
+import com.marcelo.backend.apirest.utils.ExceptionsConstantes;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -15,6 +16,10 @@ public class RequestLimitAspect {
     private static long lastResetTime = System.currentTimeMillis();
     private static int requestCount = 0;
 
+    /**
+     * Limita las request por minuto en las llamadas que usa la anotacion.
+     * @param joinPoint
+     */
     @Before("@annotation(IRequestLimit)")
     public void limitRequests(JoinPoint joinPoint) {
         long currentTime = System.currentTimeMillis();
@@ -24,7 +29,7 @@ public class RequestLimitAspect {
         }
 
         if (requestCount >= MAX_REQUESTS) {
-            throw new RequestLimitException(HttpStatus.TOO_MANY_REQUESTS, "Excedido el límite de solicitudes por minuto");
+            throw new RequestLimitException(HttpStatus.TOO_MANY_REQUESTS, ExceptionsConstantes.REQUEST_LIMIT);
         }
         requestCount++;
     }

@@ -14,6 +14,8 @@ import java.util.List;
 @RequestMapping("/api/history")
 public class HistoryController implements IHistoryController {
 
+    public static final String PAGE_DEFAULT = "0";
+    public static final String CANT_ELEMENTS_DEFAULT = "10";
     IHistoryService historyService;
 
     @Autowired
@@ -24,8 +26,8 @@ public class HistoryController implements IHistoryController {
     @Override
     @GetMapping
     public ResponseEntity<List<HistoryDto>> getPaginatedHistories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = PAGE_DEFAULT) int page,
+            @RequestParam(defaultValue = CANT_ELEMENTS_DEFAULT) int pageSize) {
         try {
             List<HistoryDto> historyDtos = historyService.getPaginatedHistories(page, pageSize);
             return ResponseEntity.ok(historyDtos);
