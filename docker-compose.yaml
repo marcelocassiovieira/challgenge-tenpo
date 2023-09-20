@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  challenge_tenpo:
+    image: challenge_tenpo
+    ports:
+      - "8000:8001"
+    networks:
+      - spring
+    depends_on:
+      - postgres16
+    restart: always
+
+  postgres16:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=4513
+      - POSTGRES_DB=tenpo
+    ports:
+      - "5532:5432"
+    networks:
+      - spring
+
+networks:
+  spring:
+    driver: bridge
+
+
+
+
