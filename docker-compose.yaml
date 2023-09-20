@@ -1,7 +1,9 @@
 version: "3.9"
 services:
   challenge_tenpo:
-    image: challenge_tenpo
+    build:
+      context: /
+      dockerfile: Dockerfile
     ports:
       - "8000:8001"
     networks:
@@ -16,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=4513
       - POSTGRES_DB=tenpo
     ports:
-      - "5532:5432"
+      - "5532:5532"
     networks:
       - spring
 
