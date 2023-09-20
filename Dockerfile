@@ -18,6 +18,7 @@ WORKDIR /app
 COPY target/Challenge_Tenpo-0.0.1-SNAPSHOT.jar /app/Challenge_Tenpo-0.0.1-SNAPSHOT.jar
 
 ENV PORT 8001
+
 EXPOSE $PORT
 
 ENTRYPOINT ["java", "-jar", "Challenge_Tenpo-0.0.1-SNAPSHOT.jar"]
